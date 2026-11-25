@@ -1,0 +1,9 @@
+# Allow-list: nothing reaches an image unless it is named here (no data, credentials or notebooks).
+*
+!src
+!configs
+!requirements
+!pyproject.toml
+!README.md
+**/__pycache__
+**/*.egg-info

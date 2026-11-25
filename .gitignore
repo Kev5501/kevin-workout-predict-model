@@ -1,0 +1,37 @@
+# secrets / credentials
+.env
+*credentials*.json
+credentials.json
+*service_account*.json
+service_account.json
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# misspelled service-account key file used by the notebooks
+credentails.json
+
+# modeling pipeline: personal data and generated model files (reports stay tracked)
+research/data/
+research/artifacts/
+*.parquet
+*.joblib
+catboost_info/
+
+# local runs, caches, infrastructure state
+.local/
+.ruff_cache/
+.terraform/
+*.tfstate*
+*.tfvars
+!*.tfvars.example

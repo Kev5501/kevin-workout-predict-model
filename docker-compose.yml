@@ -1,0 +1,28 @@
+# Local demo on synthetic data. No cloud account or credentials needed.
+#   python scripts/make_demo_data.py
+#   docker compose run --rm trainer
+#   docker compose up api        -> http://localhost:8080/docs
+x-local: &local
+  user: "${UID:-1000}:${GID:-1000}"
+  environment:
+    WML_APP__BACKEND: local
+    WML_APP__LOCAL_DIR: /data
+    WML_SHEETS__LOCAL_HISTORY: /data/history.parquet
+  volumes:
+    - ./.local:/data
+
+services:
+  api:
+    <<: *local
+    build: {context: ., dockerfile: docker/api.Dockerfile}
+    ports: ["8080:8080"]
+  trainer:
+    <<: *local
+    build: {context: ., dockerfile: docker/trainer.Dockerfile}
+    environment:
+      WML_APP__BACKEND: local
+      WML_APP__LOCAL_DIR: /data
+      WML_SHEETS__LOCAL_HISTORY: /data/history.parquet
+      WML_TRAINING__PROMOTION__MUST_BEAT_NAIVE: "false"   # synthetic data: just get a model in place
+    command: ["--mode", "full", "--trigger", "initial", "--reason", "local demo"]
+    profiles: ["train"]

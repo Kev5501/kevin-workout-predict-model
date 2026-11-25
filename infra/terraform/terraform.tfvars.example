@@ -1,0 +1,20 @@
+# Copy to terraform.tfvars (ignored by git) and fill in.
+project_id        = "your-project-id"
+bucket_name       = "your-project-id-workout-models"
+spreadsheet_id    = "the long id in the spreadsheet URL"
+github_repository = "Owner/repository-name"
+human_invokers    = ["user:you@example.com"]
+create_firestore  = true  # false if the (default) database already exists
+scheduler_paused  = true  # false once a manual run looks right
+
+# Email after repeated performance retrains (needs a secret version first)
+alerts_enabled = false
+alert_email    = ""
+smtp_user      = ""
+
+# Optional alert budget
+billing_account   = ""
+monthly_alert_usd = 1
+
+# Optional overrides of configs/pipeline.yaml
+extra_env = {}

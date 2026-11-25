@@ -1,0 +1,5 @@
+# Everything for local development, including the research code in research/.
+#   py -3.13 -m venv .venv && .venv\Scripts\pip install -r requirements.txt
+-r requirements/research.txt
+-e .
+-e ./research

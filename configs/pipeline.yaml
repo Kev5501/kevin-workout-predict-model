@@ -1,0 +1,67 @@
+# Every value can be overridden by an environment variable: WML_ + path, with __ between levels.
+#   WML_TRAINING__PERFORMANCE__MAX_MAPE=4.0
+#   WML_SCHEDULE='{"Monday": "Push", "Tuesday": "Rest"}'      (changes only those weekdays)
+# Account-specific values (project, bucket, spreadsheet, email) are only ever set by environment.
+
+app:
+  timezone: America/New_York
+  log_level: INFO
+  backend: local              # local (files, no cloud) | gcp
+  local_dir: .local
+
+schedule:                     # a weekday that is missing or "Rest" is a rest day
+  Sunday: Lower
+  Monday: Rest
+  Tuesday: Push
+  Wednesday: Pull
+  Thursday: Legs
+  Friday: Rest
+  Saturday: Upper
+
+sheets:
+  source_tab: Enriched_Data
+  output_tab: Predictions
+
+inference:
+  lookback_days: 30           # template = every exercise + set done on that gym day in this window
+  max_horizon_days: 7
+  reps: [5, 6, 7, 8, 9, 10]
+  rpe: 10
+  round_to: 2.5
+  match_window_days: 3        # a workout done this many days off schedule still scores its prediction
+  max_row_drop: 0.05          # abort if the sheet lost more than this share of its rows
+  max_jump: 0.30              # flag predictions this far from the last session
+  on_jump: abort              # abort | warn
+
+training:
+  model_name: lightgbm
+  retry_failed_after_days: 3  # a failing job must not retry (and cost compute) every day
+  seed: 42
+  scheduled:
+    enabled: true
+    every_days: 30
+    mode: full                # feature selection + tuning + refit
+  performance:
+    enabled: true
+    mode: tune                # tuning + refit on the current model's features
+    window_days: 14
+    max_mape: 3.75            # percent; see README for how this was chosen
+    min_sets: 40
+    cooldown_days: 7          # after any training run
+    alert_after_consecutive: 3
+    pause_after_alert: false
+  promotion:
+    auto: true
+    eval_workouts: 20         # most recent workouts, unseen by the candidate's selection and tuning
+    max_relative_worse: 0.05
+    must_beat_naive: true
+  tuning:
+    n_trials: 100
+    timeout_minutes: 15       # stop starting new trials; the job itself is capped in Terraform
+    trial_jobs: 4
+    n_threads: 4
+
+alerts:
+  enabled: false
+  smtp_host: smtp.gmail.com
+  smtp_port: 465

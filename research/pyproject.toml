@@ -1,0 +1,11 @@
+# Research package (model comparison, notebooks). Install with: pip install -e . -e research
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "workout-ml-research"
+version = "0.0.0"
+
+[tool.setuptools]
+packages = ["modeling"]
